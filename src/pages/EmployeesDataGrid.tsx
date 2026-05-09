@@ -36,6 +36,11 @@ const employeesDataColumns: TableColumnsType<Employee> = [
         key: 'reportingManager',
         title: 'Reporting Manager',
         dataIndex: 'reportingManager'
+    },
+    {
+        key: 'compensation',
+        title: 'Compensation (L/Annum)',
+        dataIndex: 'compensation'
     }
 ]
 
