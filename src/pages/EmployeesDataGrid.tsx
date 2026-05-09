@@ -1,5 +1,7 @@
-import {Table, type TableColumnsType} from "antd";
+import {Button, Table, type TableColumnsType} from "antd";
 import type {Employee} from "../models/employee.model.ts";
+import {UserAddOutlined} from "@ant-design/icons";
+import {useState} from "react";
 
 const employeesDataColumns: TableColumnsType<Employee> = [
     {
@@ -44,7 +46,7 @@ const employeesDataColumns: TableColumnsType<Employee> = [
     }
 ]
 
-const employees: Employee[] = [
+const employeesData: Employee[] = [
     {
         orgId: 'C157311',
         firstName: 'Sai Rohith Reddy',
@@ -69,8 +71,17 @@ const employees: Employee[] = [
 
 export const EmployeesDataGrid = () => {
 
+    const [employees] = useState<Employee[]>(employeesData);
+
+    const openOnboardingForm = (): void => {
+        console.log('openOnboardingForm');
+    };
+
     return (
         <div className={"data-grid-container"}>
+            <div style={{paddingBottom: "1rem", display: "flex", justifyContent: "flex-end"}}>
+                <Button type={"primary"} icon={<UserAddOutlined/>} onClick={openOnboardingForm}>Onboard</Button>
+            </div>
             <Table dataSource={employees} columns={employeesDataColumns} bordered></Table>
         </div>
     );
