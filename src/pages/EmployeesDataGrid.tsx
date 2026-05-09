@@ -1,4 +1,4 @@
-import {Button, Table, type TableColumnsType} from "antd";
+import {Button, Modal, Table, type TableColumnsType} from "antd";
 import type {Employee} from "../models/employee.model.ts";
 import {UserAddOutlined} from "@ant-design/icons";
 import {useState} from "react";
@@ -72,17 +72,33 @@ const employeesData: Employee[] = [
 export const EmployeesDataGrid = () => {
 
     const [employees] = useState<Employee[]>(employeesData);
+    const [isOnboardingFormOpen, setIsOnboardingFormOpen] = useState(false);
 
     const openOnboardingForm = (): void => {
-        console.log('openOnboardingForm');
+        setIsOnboardingFormOpen(true);
     };
 
+    const handleOnboardingFormClose = (): void => {
+        setIsOnboardingFormOpen(false);
+    }
+
     return (
-        <div className={"data-grid-container"}>
-            <div style={{paddingBottom: "1rem", display: "flex", justifyContent: "flex-end"}}>
-                <Button type={"primary"} icon={<UserAddOutlined/>} onClick={openOnboardingForm}>Onboard</Button>
+        <>
+            <div className={"data-grid-container"}>
+                <div style={{paddingBottom: "1rem", display: "flex", justifyContent: "flex-end"}}>
+                    <Button type={"primary"} icon={<UserAddOutlined/>} onClick={openOnboardingForm}>Onboard</Button>
+                </div>
+                <Table dataSource={employees} columns={employeesDataColumns} bordered></Table>
             </div>
-            <Table dataSource={employees} columns={employeesDataColumns} bordered></Table>
-        </div>
+            <Modal
+                title="Employee Onboarding"
+                open={isOnboardingFormOpen}
+                closable={true}
+                onCancel={handleOnboardingFormClose}
+                onOk={handleOnboardingFormClose}
+            >
+                <p>Onboarding Form Here</p>
+            </Modal>
+        </>
     );
 }
