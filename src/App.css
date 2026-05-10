@@ -1,8 +1,14 @@
 .content-style {
     padding-top: 3rem;
-    background-color: white
+    background-color: white;
 }
 
 .data-grid-container {
     padding: 3rem;
+
+    .grid-actions {
+        display: flex;
+        justify-content: flex-end;
+        padding-bottom: 1rem;
+    }
 }

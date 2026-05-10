@@ -85,7 +85,7 @@ export const EmployeesDataGrid = () => {
     return (
         <>
             <div className={"data-grid-container"}>
-                <div style={{paddingBottom: "1rem", display: "flex", justifyContent: "flex-end"}}>
+                <div className={"grid-actions"}>
                     <Button type={"primary"} icon={<UserAddOutlined/>} onClick={openOnboardingForm}>Onboard</Button>
                 </div>
                 <Table dataSource={employees} columns={employeesDataColumns} bordered></Table>
