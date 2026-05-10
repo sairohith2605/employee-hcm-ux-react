@@ -9,3 +9,8 @@ export interface Employee {
     reportingManager: string;
     compensation: number;
 }
+
+export interface EmployeeOnboardingInfo extends Employee {
+
+    isContractor: boolean;
+}

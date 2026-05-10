@@ -1,7 +1,8 @@
-import {Button, Modal, Table, type TableColumnsType} from "antd";
-import type {Employee} from "../models/employee.model.ts";
+import {Button, Form, Modal, Table, type TableColumnsType} from "antd";
+import type {Employee, EmployeeOnboardingInfo} from "../models/employee.model.ts";
 import {UserAddOutlined} from "@ant-design/icons";
 import {useState} from "react";
+import {EmployeeOnboardingForm} from "../components/EmployeeOnboardingForm.tsx";
 
 const employeesDataColumns: TableColumnsType<Employee> = [
     {
@@ -42,7 +43,8 @@ const employeesDataColumns: TableColumnsType<Employee> = [
     {
         key: 'compensation',
         title: 'Compensation (L/Annum)',
-        dataIndex: 'compensation'
+        dataIndex: 'compensation',
+        render: (value: number) => `₹${value.toLocaleString('en-IN')}`
     }
 ]
 
@@ -51,17 +53,17 @@ const employeesData: Employee[] = [
         orgId: 'C157311',
         firstName: 'Sai Rohith Reddy',
         lastName: 'Vangala',
-        email: 'sairohith.vangala@coneng.com',
-        phoneNumber: '9999900111',
+        email: 'sairohith.vangala@quantco.com',
+        phoneNumber: '9443687853',
         department: 'Engineering - Platform Core',
-        reportingManager: 'Vijay Mishra',
+        reportingManager: 'Aravinder Reddy',
         compensation: 31.5
     },
     {
         orgId: 'EC187381',
         firstName: 'Anurag Reddy',
         lastName: 'Kasireddy',
-        email: 'anurag.kasireddy@coneng.com',
+        email: 'anurag.kasireddy@quantco.com',
         phoneNumber: '9893899183',
         department: 'Finance - Market Analytics',
         reportingManager: 'Pradeep Sharma',
@@ -71,8 +73,9 @@ const employeesData: Employee[] = [
 
 export const EmployeesDataGrid = () => {
 
-    const [employees] = useState<Employee[]>(employeesData);
+    const [employees, setEmployees] = useState<Employee[]>(employeesData);
     const [isOnboardingFormOpen, setIsOnboardingFormOpen] = useState(false);
+    const [onboardingForm] = Form.useForm<EmployeeOnboardingInfo>();
 
     const openOnboardingForm = (): void => {
         setIsOnboardingFormOpen(true);
@@ -80,6 +83,24 @@ export const EmployeesDataGrid = () => {
 
     const handleOnboardingFormClose = (): void => {
         setIsOnboardingFormOpen(false);
+        onboardingForm.resetFields();
+    }
+
+    const handleOnboardingFormSubmit = (employeeFormData: EmployeeOnboardingInfo): void => {
+        if (employeeFormData) {
+            const newEmployeeOrgId = generateEmployeeOrgId(employeeFormData.isContractor);
+            const registeredEmployee: Employee = {
+                ...employeeFormData,
+                orgId: newEmployeeOrgId
+            };
+            setEmployees(employeeRecords => [...employeeRecords, registeredEmployee]);
+            handleOnboardingFormClose();
+        }
+    }
+
+    const generateEmployeeOrgId = (isContractor: boolean): string => {
+        const randomInteger = parseInt(Math.random().toFixed(6).replace("0.",""));
+        return isContractor ? `EC${randomInteger}` : `C${randomInteger}`;
     }
 
     return (
@@ -88,16 +109,27 @@ export const EmployeesDataGrid = () => {
                 <div className={"grid-actions"}>
                     <Button type={"primary"} icon={<UserAddOutlined/>} onClick={openOnboardingForm}>Onboard</Button>
                 </div>
-                <Table dataSource={employees} columns={employeesDataColumns} bordered></Table>
+                <Table dataSource={employees} columns={employeesDataColumns} id="orgId" bordered></Table>
             </div>
             <Modal
                 title="Employee Onboarding"
                 open={isOnboardingFormOpen}
-                closable={true}
                 onCancel={handleOnboardingFormClose}
-                onOk={handleOnboardingFormClose}
+                okButtonProps={{ autoFocus: true, htmlType: 'submit' }}
+                okText="Submit"
+                modalRender={(dom) => (
+                    <Form
+                        name="employeeOnboardingForm"
+                        layout="vertical"
+                        form={onboardingForm}
+                        onFinish={handleOnboardingFormSubmit}
+                        clearOnDestroy
+                    >
+                        {dom}
+                    </Form>
+                )}
             >
-                <p>Onboarding Form Here</p>
+                <EmployeeOnboardingForm></EmployeeOnboardingForm>
             </Modal>
         </>
     );
